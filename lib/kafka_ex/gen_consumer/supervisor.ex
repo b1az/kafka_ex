@@ -15,6 +15,8 @@ defmodule KafkaEx.GenConsumer.Supervisor do
 
   use DynamicSupervisor
 
+  @default_worker_shutdown 5_000
+
   @doc """
   Starts a `GenConsumer.Supervisor` process linked to the current process.
 
@@ -57,7 +59,8 @@ defmodule KafkaEx.GenConsumer.Supervisor do
         id: gen_consumer_module,
         start:
           {gen_consumer_module, :start_link,
-           [consumer_module, group_name, topic, partition, opts]}
+           [consumer_module, group_name, topic, partition, opts]},
+        shutdown: Keyword.get(opts, :shutdown, @default_worker_shutdown)
       }
     end
 
